@@ -1,0 +1,57 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  height: 60px;
+  background-color: var(--c-dark);
+  border-bottom: 1px solid rgba(233, 168, 76, 0.15);
+}
+
+.navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.navbar__badge {
+  width: 26px;
+  height: 26px;
+  background-color: var(--c-gold);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.navbar__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+}
+
+.navbar__login {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--c-dark);
+  background-color: var(--c-gold);
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.03em;
+  transition: background-color 0.15s ease;
+}
+
+.navbar__login:hover {
+  background-color: var(--c-gold-dark);
+}
