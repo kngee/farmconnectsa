@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { db, auth } from '../firebase';
-import '../styles/Dashboard.css';
+import { db, auth } from '../../firebase.js';
+import './Dashboard.css';
 
 export default function Dashboard({ user }) {
   const navigate = useNavigate();
