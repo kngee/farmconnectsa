@@ -14,7 +14,7 @@ function TitleUpdater() {
 
   useEffect(() => {
     const titles = {
-      '/': 'FarmConnectSA - Agricultural AI for Farmers',
+      '/': 'FarmConnectSA',
       '/auth': 'Sign In - FarmConnectSA',
       '/dashboard': 'Admin Dashboard - FarmConnectSA',
     };
