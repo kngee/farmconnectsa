@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../firebase';
+import Footer from '../../components/Footer/Footer';
+
 import './AuthPage.css';
 
 /* Inline SVG for the Google 'G' logo — no external dependency */

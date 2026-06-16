@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/NavBar/NavBar.jsx';
+import Footer from '../../components/Footer/Footer';
 import './LandingPage.css';
 
 /* ── Data ─────────────────────────────────────── */
@@ -196,13 +197,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Footer ────────────────────────────── */}
-      <footer className="footer">
-        <p className="footer__text">
-          © {new Date().getFullYear()} FarmConnectSA &nbsp;·&nbsp;
-          University of the Witwatersrand &nbsp;·&nbsp;
-          Team Leader: Kiran Soodyall
-        </p>
-      </footer>
+      <Footer />
     </>
   );
 }

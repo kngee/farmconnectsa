@@ -3,6 +3,7 @@ import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { db, auth } from '../../firebase.js';
+import Footer from '../../components/Footer/Footer';
 import './Dashboard.css';
 
 export default function Dashboard({ user }) {
