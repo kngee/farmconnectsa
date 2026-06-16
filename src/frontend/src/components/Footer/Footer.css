@@ -1,9 +1,9 @@
 .footer {
-  background-color: #1a1a1a;
-  color: #e0e0e0;
-  padding: 40px 20px 20px;
-  margin-top: 60px;
-  border-top: 1px solid #333;
+  background-color: #1a3a2a;
+  color: #d4d4d8;
+  padding: 50px 20px 30px;
+  margin-top: 80px;
+  border-top: 3px solid #2d5a3d;
 }
 
 .footer__content {
@@ -13,71 +13,57 @@
 
 .footer__text {
   text-align: center;
-  font-size: 14px;
-  margin-bottom: 30px;
-  line-height: 1.6;
+  font-size: 13px;
+  margin-bottom: 40px;
+  color: #888;
+  letter-spacing: 0.5px;
 }
 
 .footer__team {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 30px;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid #333;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
-.footer__team-section h4 {
-  color: #6D28D9;
-  margin-bottom: 15px;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.footer__team-section ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.footer__team-section li {
+.footer__section h4 {
+  color: #7c3aed;
   margin-bottom: 12px;
-  font-size: 13px;
-}
-
-.footer__team-section strong {
-  display: block;
-  color: #fff;
-  margin-bottom: 3px;
-}
-
-.footer__team-section a {
-  color: #6D28D9;
-  text-decoration: none;
   font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.footer__name {
+  color: #fff;
+  font-size: 14px;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.footer__email {
+  color: #7c3aed;
+  text-decoration: none;
+  font-size: 13px;
   transition: color 0.3s ease;
 }
 
-.footer__team-section a:hover {
-  color: #8b5cf6;
+.footer__email:hover {
+  color: #a78bfa;
   text-decoration: underline;
-}
-
-.footer__team-section .role {
-  color: #999;
-  font-size: 12px;
-  display: block;
 }
 
 @media (max-width: 768px) {
   .footer {
-    padding: 30px 15px 15px;
-    margin-top: 40px;
+    padding: 40px 15px 25px;
+    margin-top: 60px;
   }
 
   .footer__team {
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 30px;
   }
 
   .footer__text {
