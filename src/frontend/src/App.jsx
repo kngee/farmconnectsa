@@ -4,13 +4,13 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 
 // Page Imports
-import LandingPage from './pages/LandingPage/LandingPage';
-import AuthPage from './pages/AuthPage/AuthPage';
-import DashboardLayout from './pages/Dashboard/DashboardLayout';
-import ChatLogs from './pages/Dashboard/ChatLogs';
-import FarmerProfiles from './pages/Dashboard/FarmerProfiles';
-import Auctions from './pages/Dashboard/Auctions';
-import Alerts from './pages/Dashboard/Alerts';
+import LandingPage from './pages/LandingPage/LandingPage.jsx';
+import AuthPage from './pages/AuthPage/AuthPage.jsx';
+import DashboardLayout from './pages/Dashboard/DashboardLayout.jsx';
+import ChatLogs from './pages/Dashboard/Chatlogs.jsx';
+import FarmerProfiles from './pages/Dashboard/FarmerProfiles.jsx';
+import Auctions from './pages/Dashboard/Auctions.jsx';
+import Alerts from './pages/Dashboard/Alerts.jsx';
 
 // Styles
 import './App.css';
