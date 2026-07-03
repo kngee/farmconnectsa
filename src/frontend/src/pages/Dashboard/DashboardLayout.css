@@ -1,0 +1,141 @@
+.dashboard-layout {
+  display: flex;
+  height: 100vh; /* Changed from min-height to fixed height */
+  overflow: hidden; /* Prevents the whole browser window from scrolling */
+  background-color: var(--c-bg);
+  font-family: var(--font-body);
+}
+
+/* ── Sidebar ── */
+.dashboard-sidebar {
+  width: 260px;
+  background-color: var(--c-dark);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.sidebar-brand {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  padding: 0 1.5rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+  border-bottom: 1px solid rgba(233, 168, 76, 0.15);
+}
+
+.sidebar-nav {
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav-heading {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 1rem 0 0.25rem 0.5rem;
+  font-weight: 700;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.nav-item.active {
+  background-color: rgba(233, 168, 76, 0.15);
+  color: var(--c-gold);
+  font-weight: 600;
+}
+
+/* ── Main Area & Header ── */
+.dashboard-main-area {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.dashboard-header {
+  height: 60px;
+  background-color: white;
+  border-bottom: 1px solid var(--c-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.role-badge {
+  background-color: var(--c-dark);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Reusing your existing signout logic styling */
+.dashboard-header__right { display: flex; align-items: center; gap: 1rem; }
+.dashboard-header__email { font-size: 0.82rem; color: var(--c-text-muted); }
+.dashboard-header__signout {
+  padding: 0.45rem 1rem;
+  background: white;
+  color: var(--c-dark);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.dashboard-header__signout:hover { background: #f8f9fa; }
+
+.dashboard-content-wrapper {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.dashboard-header__connect {
+  padding: 0.45rem 1rem;
+  background: #25D366; /* WhatsApp Green */
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  transition: background-color 0.15s ease;
+  margin-right: 1rem;
+}
+
+.dashboard-header__connect:hover {
+  background: #1ebd5a;
+}

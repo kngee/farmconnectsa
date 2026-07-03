@@ -2,9 +2,17 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
+
+// Page Imports
 import LandingPage from './pages/LandingPage/LandingPage';
 import AuthPage from './pages/AuthPage/AuthPage';
-import Dashboard from './pages/Dashboard/Dashboard';
+import DashboardLayout from './pages/Dashboard/DashboardLayout';
+import ChatLogs from './pages/Dashboard/ChatLogs';
+import FarmerProfiles from './pages/Dashboard/FarmerProfiles';
+import Auctions from './pages/Dashboard/Auctions';
+import Alerts from './pages/Dashboard/Alerts';
+
+// Styles
 import './App.css';
 import './global.css';
 
@@ -45,12 +53,23 @@ function App() {
     <BrowserRouter>
       <TitleUpdater />
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/auth" element={<AuthPage />} />
-        <Route
-          path="/dashboard"
-          element={user ? <Dashboard user={user} /> : <Navigate to="/auth" />}
-        />
+        
+        {/* Protected Dashboard Routes (Nested) */}
+        <Route 
+          path="/dashboard" 
+          element={user ? <DashboardLayout user={user} /> : <Navigate to="/auth" />}
+        >
+          {/* These components render inside the DashboardLayout's <Outlet /> */}
+          <Route index element={<ChatLogs />} />
+          <Route path="profiles" element={<FarmerProfiles />} />
+          <Route path="auctions" element={<Auctions />} />
+          <Route path="alerts" element={<Alerts />} />
+        </Route>
+
+        {/* Catch-all Redirect */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
