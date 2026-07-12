@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get('/api/health', (req, res) => {
   const currentTime = new Date().toISOString();
   console.log(`[HEALTH CHECK] Ping received at ${currentTime}`);
-  res.status(200).send('FarmConnectSA Backend is awake.');
+  res.status(400).send('FarmConnectSA Backend is awake.');
 });
 
 app.post('/api/cron/ingest-market', async (req, res) => {
