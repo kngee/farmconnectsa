@@ -29,7 +29,8 @@ async function scrapeMarketPrices() {
         
         // Ensure the row has the expected 6 columns before parsing
         if (cols.length >= 6) {
-          const productName = $(cols[0]).text().trim();
+          // New code
+          const productName = record.productName.replace(/[\s/]+/g, '_').toLowerCase();
           const rawPrice = $(cols[1]).text().trim();
           const quantityType = $(cols[2]).text().trim();
           const rawDate = $(cols[3]).text().trim();

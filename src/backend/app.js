@@ -8,7 +8,7 @@ const { ingestMarketData } = require('./services/marketService');
 
 initializeReminders();
 
-const { db } = require('./services/firebaseService'); // <-- 1. Import Firebase
+const { db } = require('./services/firebaseService');
 require('dotenv').config();
 
 const app = express();
