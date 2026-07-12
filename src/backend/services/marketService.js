@@ -30,7 +30,7 @@ async function scrapeMarketPrices() {
         // Ensure the row has the expected 6 columns before parsing
         if (cols.length >= 6) {
           // New code
-          const productName = record.productName.replace(/[\s/]+/g, '_').toLowerCase();
+          const productName = $(cols[0]).text().trim();
           const rawPrice = $(cols[1]).text().trim();
           const quantityType = $(cols[2]).text().trim();
           const rawDate = $(cols[3]).text().trim();
@@ -85,7 +85,7 @@ async function ingestMarketData() {
       
       // Deterministic ID prevents duplicate records on the same day
       // e.g., "2026-07-10_beef_weaners_(200-250kg)"
-      const safeProductName = record.productName.replace(/\s+/g, '_').toLowerCase();
+      const safeProductName = record.productName.replace(/[\s/]+/g, '_').toLowerCase();
       const docId = `${dateStr}_${record.category}_${safeProductName}`;
       const docRef = db.collection('market_prices').doc(docId);
 
