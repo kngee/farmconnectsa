@@ -4,7 +4,7 @@ const express = require('express');
 const { twiml } = require('twilio');
 const { generateAgriResponse } = require('./services/aiService');
 const { initializeReminders } = require('./services/reminderService');
-const { initMarketDataCron } = require('./jobs/marketCron');
+const { ingestMarketData } = require('./services/marketService');
 
 initializeReminders();
 
