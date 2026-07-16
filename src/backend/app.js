@@ -5,6 +5,7 @@ const { twiml } = require('twilio');
 const { generateAgriResponse } = require('./services/aiService');
 const { initializeReminders } = require('./services/reminderService');
 const { ingestMarketData } = require('./services/marketService');
+const { ingestAuctionData } = require('./services/auctionService'); 
 
 initializeReminders();
 
@@ -33,12 +34,12 @@ app.post('/api/cron/ingest-market', async (req, res) => {
   // Acknowledge the request immediately so the cron service doesn't timeout
   res.status(202).send('Ingestion started.'); 
   
-  // Run the scraper in the background
+  await ingestAuctionData(); 
   await ingestMarketData();
 });
 
 app.get('/api/test-reminder', async (req, res) => {
-    console.log("🛠️ Manual reminder scan triggered via test route.");
+    console.log("Manual reminder scan triggered via test route.");
     
     const result = await runReminderScan();
 
