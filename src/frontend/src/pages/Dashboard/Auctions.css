@@ -2,7 +2,7 @@
 .dashboard-content {
   padding: 2rem;
   background-color: var(--c-bg);
-  min-height: calc(100vh - 60px); /* Account for the fixed 60px header */
+  min-height: calc(100vh - 60px); 
 }
 
 .content-header {
@@ -83,6 +83,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-transform: capitalize;
 }
 
 .stat-card--highlight {
@@ -218,7 +219,7 @@
 
 .price-table__header {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr; /* Updated to 5 columns */
   padding: 0 0.5rem 0.75rem 0.5rem;
   font-size: 0.75rem;
   text-transform: uppercase;
@@ -272,7 +273,7 @@
 
 .price-table__row {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr; /* Updated to 5 columns */
   padding: 1rem 0.5rem;
   align-items: center;
   border-bottom: 1px solid var(--c-border);
@@ -293,6 +294,24 @@
   font-weight: 700;
   color: var(--c-dark);
   font-size: 0.95rem;
+}
+
+/* ── New Price Change Metric Styles ── */
+.price-change {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.price-change--up {
+  color: #25D366;
+}
+
+.price-change--down {
+  color: #E74C3C;
+}
+
+.price-change--neutral {
+  color: var(--c-text-muted);
 }
 
 .price-unit {
@@ -566,13 +585,16 @@
     flex-direction: column;
   }
 
+  /* Compact grid down to 3 columns on mobile (Hide Unit and Category) */
   .price-table__header,
   .price-table__row {
     grid-template-columns: 1.5fr 1fr 1fr;
   }
 
-  .price-table__header > div:nth-child(3),
-  .price-table__row .price-unit {
+  .price-table__header > div:nth-child(4),
+  .price-table__header > div:nth-child(5),
+  .price-table__row .price-unit,
+  .price-table__row .price-category {
     display: none;
   }
 }

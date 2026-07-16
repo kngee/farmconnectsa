@@ -29,17 +29,20 @@ async function scrapeMarketPrices() {
         
         // Ensure the row has the expected 6 columns before parsing
         if (cols.length >= 6) {
-          // New code
           const productName = $(cols[0]).text().trim();
           const rawPrice = $(cols[1]).text().trim();
           const quantityType = $(cols[2]).text().trim();
           const rawDate = $(cols[3]).text().trim();
+          const rawChange = $(cols[4]).text().trim(); // <-- Extracted Change Column
 
           // Convert SA currency format "R 3 295,00" to a standard float 3295.00
-          // 1. Remove all characters except numbers and commas
-          // 2. Replace the decimal comma with a decimal period
           const priceStr = rawPrice.replace(/[^0-9,]/g, '').replace(',', '.');
           const price = parseFloat(priceStr);
+
+          // Convert change format "0.30 %" or "-4.86 %" to standard float
+          // Regex keeps only numbers, the decimal point, and the minus sign
+          const changeStr = rawChange.replace(/[^0-9.-]/g, '');
+          const changePercent = parseFloat(changeStr) || 0; // Fallback to 0 if NaN
 
           // Convert the extracted date string (e.g., "2026-07-10") to a standard Date object
           const recordDate = new Date(rawDate);
@@ -48,6 +51,7 @@ async function scrapeMarketPrices() {
             productName: productName,
             category: category,
             price: price,
+            change: changePercent, // <-- Added to the Firestore payload
             quantityType: quantityType,
             currency: 'ZAR',
             source: 'AMT',
@@ -84,7 +88,6 @@ async function ingestMarketData() {
       const dateStr = record.dateRecorded.toISOString().split('T')[0];
       
       // Deterministic ID prevents duplicate records on the same day
-      // e.g., "2026-07-10_beef_weaners_(200-250kg)"
       const safeProductName = record.productName.replace(/[\s/]+/g, '_').toLowerCase();
       const docId = `${dateStr}_${record.category}_${safeProductName}`;
       const docRef = db.collection('market_prices').doc(docId);
