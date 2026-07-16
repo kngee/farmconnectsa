@@ -1,144 +1,179 @@
-import React from 'react';
-import Navbar from '../../components/NavBar/NavBar.jsx';
-import Footer from '../../components/Footer/Footer';
+import React, { useEffect, useState } from 'react';
+import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { db } from '../../firebase.js'; // Adjust path based on where your firebase.js is located
 import './Auctions.css';
 
-/* ── Mock Data (To be replaced by Firestore ingestion) ── */
-const MARKET_PRICES = [
-  { id: 1, category: 'Beef A2/3', price: 'R 67,67', unit: 'per Kg', change: '+2.92%', trend: 'up' },
-  { id: 2, category: 'Weaners (200-250kg)', price: 'R 45,20', unit: 'per Kg', change: '-0.02%', trend: 'down' },
-  { id: 3, category: 'Sheep A2/3', price: 'R 107,20', unit: 'per Kg', change: '-1.78%', trend: 'down' },
-  { id: 4, category: 'White Maize', price: 'R 3 295,00', unit: 'per Ton', change: '+0.76%', trend: 'up' },
-];
-
-const UPCOMING_AUCTIONS = [
-  { 
-    id: 'auc-1', 
-    title: 'BKB Commercial Cattle Auction', 
-    date: '2026-07-24', 
-    location: 'Frankfort, Free State',
-    status: 'Scheduled'
-  },
-  { 
-    id: 'auc-2', 
-    title: 'BKB Merino Stud Sale', 
-    date: '2026-07-28', 
-    location: 'Graaff-Reinet, Eastern Cape',
-    status: 'Scheduled'
-  },
-  { 
-    id: 'auc-3', 
-    title: 'Vleissentraal Weaner Auction', 
-    date: '2026-08-02', 
-    location: 'Jozini, KwaZulu-Natal',
-    status: 'Upcoming'
-  }
-];
-
 export default function Auctions() {
+  const [marketPrices, setMarketPrices] = useState([]);
+  const [auctions, setAuctions] = useState([]);
+  const [loadingPrices, setLoadingPrices] = useState(true);
+  const [loadingAuctions, setLoadingAuctions] = useState(true);
+
+  // ── Sync Live Market Prices from Firestore ──
+  useEffect(() => {
+    // We query the market prices ordered by the date recorded, limiting to the latest records
+    const marketQuery = query(
+      collection(db, 'market_prices'),
+      orderBy('dateRecorded', 'desc'),
+      limit(50)
+    );
+
+    const unsubscribe = onSnapshot(marketQuery, (snapshot) => {
+      const prices = [];
+      snapshot.forEach((doc) => {
+        prices.push({ id: doc.id, ...doc.data() });
+      });
+      
+      // Group by category to prevent duplicate historical plots and only show current averages
+      const uniqueLatestPrices = reduceToLatest(prices);
+      setMarketPrices(uniqueLatestPrices);
+      setLoadingPrices(false);
+    }, (error) => {
+      console.error("Error fetching live market prices: ", error);
+      setLoadingPrices(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // ── Sync Upcoming Auctions from Firestore ──
+  useEffect(() => {
+    const auctionsQuery = query(
+      collection(db, 'auction_schedules'),
+      orderBy('date', 'asc')
+    );
+
+    const unsubscribe = onSnapshot(auctionsQuery, (snapshot) => {
+      const loadedAuctions = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        // Convert Firestore Timestamp to Native JS Date
+        const dateObj = data.date?.toDate ? data.date.toDate() : new Date(data.date);
+        loadedAuctions.push({ 
+          id: doc.id, 
+          ...data,
+          date: dateObj
+        });
+      });
+      setAuctions(loadedAuctions);
+      setLoadingAuctions(false);
+    }, (error) => {
+      console.error("Error fetching live auctions: ", error);
+      setLoadingAuctions(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Helper utility to keep only the latest price entry per product name
+  const reduceToLatest = (allPrices) => {
+    const map = new Map();
+    allPrices.forEach(item => {
+      if (!map.has(item.productName)) {
+        map.set(item.productName, item);
+      }
+    });
+    return Array.from(map.values());
+  };
+
   return (
-    <>
-      <Navbar />
-
-      {/* ── Hero Section ── */}
-      <section className="hero hero--compact">
-        <div className="hero__grid" aria-hidden="true" />
-        <div className="hero__content">
-          <p className="hero__eyebrow">Market Intelligence</p>
-          <h1 className="hero__headline" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
-            Live <em>Auctions</em> & Prices
-          </h1>
-          <p className="hero__body">
-            Real-time agricultural market trends and localized auction schedules. 
-            Empowering your commercial decisions with verified data.
+    <main className="dashboard-content">
+      {/* ── Page Title ── */}
+      <div className="content-header">
+        <div>
+          <h1 className="content-title">Live Auctions & Market Trends</h1>
+          <p className="content-subtitle">
+            Real-time pricing data and scheduled regional farm stock events synced directly from AMT and BKB.
           </p>
-        </div>
-      </section>
-
-      {/* ── Ticker Section ── */}
-      <div className="ticker" aria-label="Live Market Movements">
-        <div className="ticker__track" aria-hidden="true">
-          {[...MARKET_PRICES, ...MARKET_PRICES].map((item, i) => (
-            <div className="ticker__item" key={i}>
-              <span className="ticker__label">{item.category}</span>
-              <span className="ticker__number">{item.price}</span>
-              <span className={`ticker__trend ticker__trend--${item.trend}`}>
-                {item.change}
-              </span>
-            </div>
-          ))}
         </div>
       </div>
 
-      {/* ── Dashboard Split Section ── */}
-      <section className="split dashboard-split">
-        <div className="split__inner">
-          
-          {/* Left: Market Prices */}
-          <div className="market-panel">
-            <p className="split__label">National Averages</p>
-            <h2 className="split__heading">Commodity Prices</h2>
-            <p className="split__body">
-              Latest aggregated pricing data sourced directly from AMT. 
-              Use this baseline to negotiate fair value for your livestock.
-            </p>
-            
-            <div className="price-list">
-              <div className="price-list__header">
+      {/* ── Inner Content Grid ── */}
+      <div className="auctions-grid">
+        
+        {/* Left: Market Prices */}
+        <div className="auctions-card market-prices-panel">
+          <div className="card-header">
+            <h2 className="card-title">Live Market Index (ZAR)</h2>
+            <span className="source-tag">Source: AMT</span>
+          </div>
+
+          {loadingPrices ? (
+            <div className="loader">Synchronizing prices from database...</div>
+          ) : marketPrices.length === 0 ? (
+            <div className="empty-state">No live market data available in Firestore. Run the scraper.</div>
+          ) : (
+            <div className="price-table">
+              <div className="price-table__header">
                 <span>Commodity</span>
-                <span>Current Price</span>
-                <span>Trend</span>
+                <span>Price</span>
+                <span>Unit</span>
+                <span>Category</span>
               </div>
-              {MARKET_PRICES.map((item) => (
-                <div className="price-row" key={item.id}>
-                  <div className="price-row__info">
-                    <strong>{item.category}</strong>
-                    <span>{item.unit}</span>
+              <div className="price-table__body">
+                {marketPrices.map((item) => (
+                  <div className="price-table__row" key={item.id}>
+                    <div className="price-name">
+                      <strong>{item.productName.replace(/_/g, ' ')}</strong>
+                    </div>
+                    <div className="price-value">
+                      R {item.price?.toLocaleString('en-ZA', { minimumFractionDigits: 2 })}
+                    </div>
+                    <div className="price-unit">{item.quantityType}</div>
+                    <div className="price-category">
+                      <span className={`category-badge category-badge--${item.category}`}>
+                        {item.category}
+                      </span>
+                    </div>
                   </div>
-                  <div className="price-row__value">{item.price}</div>
-                  <div className={`price-row__change price-row__change--${item.trend}`}>
-                    {item.trend === 'up' ? '▲' : '▼'} {item.change.replace(/[+-]/, '')}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-
-          {/* Right: Auction Schedules */}
-          <div className="solution-card auction-panel">
-            <p className="solution-card__label">Verified Schedules</p>
-            <h2 className="solution-card__heading" style={{ fontSize: '2rem' }}>Upcoming Auctions</h2>
-            <p className="solution-card__body">
-              Synchronized directly from trusted South African auction houses.
-            </p>
-            
-            <div className="auction-list">
-              {UPCOMING_AUCTIONS.map((auction) => (
-                <div className="auction-card" key={auction.id}>
-                  <div className="auction-card__date">
-                    <span className="auction-card__month">
-                      {new Date(auction.date).toLocaleString('default', { month: 'short' })}
-                    </span>
-                    <span className="auction-card__day">
-                      {new Date(auction.date).getDate()}
-                    </span>
-                  </div>
-                  <div className="auction-card__details">
-                    <h3 className="auction-card__title">{auction.title}</h3>
-                    <p className="auction-card__location">📍 {auction.location}</p>
-                  </div>
-                  <div className="auction-card__status">
-                    <span className="status-badge">{auction.status}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
+          )}
         </div>
-      </section>
 
-      <Footer />
-    </>
+        {/* Right: Upcoming Auctions */}
+        <div className="auctions-card schedules-panel">
+          <div className="card-header">
+            <h2 className="card-title">Upcoming Schedules</h2>
+            <span className="source-tag">Source: BKB</span>
+          </div>
+
+          {loadingAuctions ? (
+            <div className="loader">Parsing upcoming schedules...</div>
+          ) : auctions.length === 0 ? (
+            <div className="empty-state">No upcoming auction events scheduled.</div>
+          ) : (
+            <div className="schedules-list">
+              {auctions.map((auction) => {
+                const isPast = auction.date < new Date();
+                return (
+                  <div className={`schedule-item ${isPast ? 'schedule-item--past' : ''}`} key={auction.id}>
+                    <div className="schedule-date-box">
+                      <span className="schedule-month">
+                        {auction.date.toLocaleString('default', { month: 'short' })}
+                      </span>
+                      <span className="schedule-day">
+                        {auction.date.getDate()}
+                      </span>
+                    </div>
+                    <div className="schedule-details">
+                      <h3 className="schedule-title">{auction.title}</h3>
+                      <p className="schedule-location">📍 {auction.location}</p>
+                    </div>
+                    <div className="schedule-status">
+                      <span className={`status-pill ${isPast ? 'status-pill--past' : 'status-pill--active'}`}>
+                        {isPast ? 'Completed' : 'Upcoming'}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+      </div>
+    </main>
   );
 }
