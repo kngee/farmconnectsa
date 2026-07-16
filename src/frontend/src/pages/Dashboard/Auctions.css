@@ -22,6 +22,89 @@
   color: var(--c-text-muted);
 }
 
+/* ── At-a-glance Stats Row ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md, 8px);
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background-color: rgba(233, 168, 76, 0.1);
+  color: var(--c-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.stat-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stat-value {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--c-dark);
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+  margin-top: 0.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-card--highlight {
+  background-color: var(--c-dark);
+  border-color: var(--c-dark);
+}
+
+.stat-card--highlight .stat-icon {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.stat-card--highlight .stat-value {
+  color: white;
+  font-size: 0.95rem;
+  white-space: normal;
+}
+
+.stat-card--highlight .stat-label {
+  color: rgba(255, 255, 255, 0.6);
+  white-space: normal;
+}
+
 /* ── Content Grid Layout ── */
 .auctions-grid {
   display: grid;
@@ -66,6 +149,68 @@
   letter-spacing: 0.05em;
 }
 
+/* ── Table Controls (search + filter) ── */
+.table-controls {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.search-box {
+  position: relative;
+  flex-grow: 1;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  color: var(--c-text-muted);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.55rem 0.75rem 0.55rem 2.15rem;
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background-color: #fafbfd;
+  color: var(--c-dark);
+  font-family: inherit;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--c-gold);
+  background-color: white;
+}
+
+.filter-select {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background-color: #fafbfd;
+  color: var(--c-dark);
+  font-family: inherit;
+  min-width: 150px;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--c-gold);
+}
+
+.results-count {
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+  margin-bottom: 0.85rem;
+}
+
 /* ── Market Prices Table UI ── */
 .price-table {
   width: 100%;
@@ -81,6 +226,43 @@
   letter-spacing: 0.05em;
   color: var(--c-text-muted);
   border-bottom: 2px solid var(--c-border);
+}
+
+.sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--c-text-muted);
+  cursor: pointer;
+}
+
+.sort-btn:hover {
+  color: var(--c-dark);
+}
+
+.sort-btn.active {
+  color: var(--c-dark);
+}
+
+.sort-icon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.45;
+  flex-shrink: 0;
+}
+
+.sort-btn.active .sort-icon {
+  opacity: 1;
+  color: var(--c-gold);
 }
 
 .price-table__body {
@@ -136,7 +318,149 @@
 .category-badge--poultry { background-color: #eefdfd; color: #16a085; }
 .category-badge--pork { background-color: #fcf0f5; color: #db3a7b; }
 
+/* ── Calendar Widget ── */
+.calendar-widget {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md, 8px);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #fafbfd;
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.calendar-nav-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--c-border);
+  background-color: white;
+  color: var(--c-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.calendar-nav-btn:hover {
+  border-color: var(--c-gold);
+  color: var(--c-gold);
+}
+
+.calendar-nav-btn .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.calendar-month-label {
+  font-family: var(--font-display, sans-serif);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--c-dark);
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.2rem;
+}
+
+.calendar-day {
+  position: relative;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-family: inherit;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  color: var(--c-dark);
+  cursor: default;
+}
+
+.calendar-day--empty {
+  visibility: hidden;
+}
+
+.calendar-day--has-event {
+  cursor: pointer;
+  font-weight: 700;
+  background-color: rgba(233, 168, 76, 0.08);
+}
+
+.calendar-day--has-event:hover {
+  background-color: rgba(233, 168, 76, 0.2);
+}
+
+.calendar-day--today {
+  box-shadow: inset 0 0 0 1.5px var(--c-dark);
+}
+
+.calendar-day--selected {
+  background-color: var(--c-gold);
+  color: white;
+}
+
+.calendar-dot {
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--c-gold);
+}
+
+.calendar-day--selected .calendar-dot {
+  background-color: white;
+}
+
 /* ── Schedules Panel UI ── */
+.upcoming-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.upcoming-list-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--c-dark);
+}
+
+.clear-filter-btn {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--c-gold);
+  cursor: pointer;
+  padding: 0;
+}
+
+.clear-filter-btn:hover {
+  text-decoration: underline;
+}
+
 .schedules-list {
   display: flex;
   flex-direction: column;
@@ -151,10 +475,6 @@
   border: 1px solid var(--c-border);
   border-radius: var(--radius-md, 6px);
   padding: 0.85rem;
-}
-
-.schedule-item--past {
-  opacity: 0.6;
 }
 
 .schedule-date-box {
@@ -186,6 +506,7 @@
 
 .schedule-details {
   flex-grow: 1;
+  min-width: 0;
 }
 
 .schedule-title {
@@ -207,16 +528,12 @@
   letter-spacing: 0.05em;
   padding: 0.25rem 0.5rem;
   border-radius: 50px;
+  white-space: nowrap;
 }
 
 .status-pill--active {
   background-color: rgba(37, 211, 102, 0.1);
   color: #25D366;
-}
-
-.status-pill--past {
-  background-color: rgba(0, 0, 0, 0.05);
-  color: var(--c-text-muted);
 }
 
 /* ── Global Card States ── */
@@ -228,8 +545,34 @@
 }
 
 /* ── Responsive ── */
+@media (max-width: 1200px) {
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 1024px) {
   .auctions-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .table-controls {
+    flex-direction: column;
+  }
+
+  .price-table__header,
+  .price-table__row {
+    grid-template-columns: 1.5fr 1fr 1fr;
+  }
+
+  .price-table__header > div:nth-child(3),
+  .price-table__row .price-unit {
+    display: none;
   }
 }
