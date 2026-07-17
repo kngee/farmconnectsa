@@ -1,126 +1,600 @@
-/* Self-contained styles — rendered on both the public page and the farmer dashboard */
-.auction-hub {
-  max-width: 1020px;
-  margin: 0 auto;
-  padding: 2.5rem 2rem;
+/* ── Main Content Shell ── */
+.dashboard-content {
+  padding: 2rem;
+  background-color: var(--c-bg);
+  min-height: calc(100vh - 60px); 
 }
 
-.auction-hub__title {
-  font-family: var(--font-display);
-  font-size: 2.25rem;
-  font-weight: 800;
-  color: var(--c-dark);
-  margin-bottom: 0.35rem;
-}
-
-.auction-hub__subtitle {
-  font-size: 0.9rem;
-  color: var(--c-text-muted);
+.content-header {
   margin-bottom: 2rem;
 }
 
-/* ── Coming-soon banner ── */
-.auction-hub__banner {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.85rem;
-  background-color: rgba(233, 168, 76, 0.1);
-  border: 1px solid rgba(233, 168, 76, 0.35);
-  border-radius: var(--radius-md);
-  padding: 1rem 1.25rem;
-  margin-bottom: 2.5rem;
+.content-title {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--c-dark);
+  margin-bottom: 0.25rem;
+}
+
+.content-subtitle {
   font-size: 0.9rem;
-  color: var(--c-gold-dark);
-  line-height: 1.55;
+  color: var(--c-text-muted);
 }
 
-.auction-hub__banner p { margin: 0; }
-.auction-hub__banner strong { color: var(--c-soil); }
-
-/* ── Auction cards ── */
-.auction-hub__grid {
+/* ── At-a-glance Stats Row ── */
+.stats-row {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 2rem;
 }
 
-.auction-card {
-  background-color: var(--c-surface);
+.stat-card {
+  background: white;
   border: 1px solid var(--c-border);
-  border-radius: var(--radius-md);
-  padding: 1.25rem 1.5rem;
+  border-radius: var(--radius-md, 8px);
+  padding: 1.15rem 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background-color: rgba(233, 168, 76, 0.1);
+  color: var(--c-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.stat-body {
   display: flex;
   flex-direction: column;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  min-width: 0;
 }
 
-.auction-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
+.stat-value {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--c-dark);
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.auction-card__top {
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+  margin-top: 0.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+}
+
+.stat-card--highlight {
+  background-color: var(--c-dark);
+  border-color: var(--c-dark);
+}
+
+.stat-card--highlight .stat-icon {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.stat-card--highlight .stat-value {
+  color: white;
+  font-size: 0.95rem;
+  white-space: normal;
+}
+
+.stat-card--highlight .stat-label {
+  color: rgba(255, 255, 255, 0.6);
+  white-space: normal;
+}
+
+/* ── Content Grid Layout ── */
+.auctions-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+/* ── Panel Cards ── */
+.auctions-card {
+  background: white;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md, 8px);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--c-border);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.card-title {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--c-dark);
+}
+
+.source-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--c-gold);
+  background-color: rgba(233, 168, 76, 0.1);
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Table Controls (search + filter) ── */
+.table-controls {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.search-box {
+  position: relative;
+  flex-grow: 1;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  color: var(--c-text-muted);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.55rem 0.75rem 0.55rem 2.15rem;
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background-color: #fafbfd;
+  color: var(--c-dark);
+  font-family: inherit;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--c-gold);
+  background-color: white;
+}
+
+.filter-select {
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background-color: #fafbfd;
+  color: var(--c-dark);
+  font-family: inherit;
+  min-width: 150px;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--c-gold);
+}
+
+.results-count {
+  font-size: 0.75rem;
+  color: var(--c-text-muted);
+  margin-bottom: 0.85rem;
+}
+
+/* ── Market Prices Table UI ── */
+.price-table {
+  width: 100%;
+}
+
+.price-table__header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr; /* Updated to 5 columns */
+  padding: 0 0.5rem 0.75rem 0.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--c-text-muted);
+  border-bottom: 2px solid var(--c-border);
+}
+
+.sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--c-text-muted);
+  cursor: pointer;
+}
+
+.sort-btn:hover {
+  color: var(--c-dark);
+}
+
+.sort-btn.active {
+  color: var(--c-dark);
+}
+
+.sort-icon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.45;
+  flex-shrink: 0;
+}
+
+.sort-btn.active .sort-icon {
+  opacity: 1;
+  color: var(--c-gold);
+}
+
+.price-table__body {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-table__row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr; /* Updated to 5 columns */
+  padding: 1rem 0.5rem;
+  align-items: center;
+  border-bottom: 1px solid var(--c-border);
+  transition: background-color 0.15s ease;
+}
+
+.price-table__row:hover {
+  background-color: rgba(0, 0, 0, 0.01);
+}
+
+.price-name strong {
+  color: var(--c-dark);
+  font-size: 0.95rem;
+  text-transform: capitalize;
+}
+
+.price-value {
+  font-weight: 700;
+  color: var(--c-dark);
+  font-size: 0.95rem;
+}
+
+/* ── New Price Change Metric Styles ── */
+.price-change {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.price-change--up {
+  color: #25D366;
+}
+
+.price-change--down {
+  color: #E74C3C;
+}
+
+.price-change--neutral {
+  color: var(--c-text-muted);
+}
+
+.price-unit {
+  font-size: 0.85rem;
+  color: var(--c-text-muted);
+}
+
+/* Category Badges */
+.category-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border-radius: 50px;
+  display: inline-block;
+}
+
+.category-badge--beef { background-color: #fbeeed; color: #c0392b; }
+.category-badge--grains { background-color: #fdf2e2; color: #d35400; }
+.category-badge--mutton { background-color: #f1fcf5; color: #27ae60; }
+.category-badge--vegetables { background-color: #edf2fb; color: #2980b9; }
+.category-badge--goats { background-color: #f6ebfa; color: #8e44ad; }
+.category-badge--poultry { background-color: #eefdfd; color: #16a085; }
+.category-badge--pork { background-color: #fcf0f5; color: #db3a7b; }
+
+/* ── Calendar Widget ── */
+.calendar-widget {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md, 8px);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #fafbfd;
+}
+
+.calendar-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0.85rem;
 }
 
-.auction-card__tag {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--c-green);
-  background-color: rgba(45, 106, 79, 0.1);
-  border-radius: 50px;
-  padding: 0.25rem 0.7rem;
-}
-
-.auction-card__date {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--c-text-muted);
-}
-
-.auction-card__town {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
+.calendar-nav-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--c-border);
+  background-color: white;
   color: var(--c-dark);
-  margin-bottom: 0.15rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-.auction-card__province {
-  font-size: 0.85rem;
+.calendar-nav-btn:hover {
+  border-color: var(--c-gold);
+  color: var(--c-gold);
+}
+
+.calendar-nav-btn .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.calendar-month-label {
+  font-family: var(--font-display, sans-serif);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--c-dark);
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 700;
   color: var(--c-text-muted);
   margin-bottom: 0.35rem;
 }
 
-.auction-card__venue {
-  font-size: 0.8rem;
-  color: var(--c-text-muted);
-  margin-bottom: 1rem;
-  flex-grow: 1;
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.2rem;
 }
 
-.auction-card__livestock {
+.calendar-day {
+  position: relative;
+  aspect-ratio: 1;
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-family: inherit;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  color: var(--c-dark);
+  cursor: default;
 }
 
-.auction-card__chip {
-  font-size: 0.78rem;
+.calendar-day--empty {
+  visibility: hidden;
+}
+
+.calendar-day--has-event {
+  cursor: pointer;
+  font-weight: 700;
+  background-color: rgba(233, 168, 76, 0.08);
+}
+
+.calendar-day--has-event:hover {
+  background-color: rgba(233, 168, 76, 0.2);
+}
+
+.calendar-day--today {
+  box-shadow: inset 0 0 0 1.5px var(--c-dark);
+}
+
+.calendar-day--selected {
+  background-color: var(--c-gold);
+  color: white;
+}
+
+.calendar-dot {
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--c-gold);
+}
+
+.calendar-day--selected .calendar-dot {
+  background-color: white;
+}
+
+/* ── Schedules Panel UI ── */
+.upcoming-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.upcoming-list-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--c-dark);
+}
+
+.clear-filter-btn {
+  background: none;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--c-gold);
+  cursor: pointer;
+  padding: 0;
+}
+
+.clear-filter-btn:hover {
+  text-decoration: underline;
+}
+
+.schedules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.schedule-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #fafbfd;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md, 6px);
+  padding: 0.85rem;
+}
+
+.schedule-date-box {
+  background-color: var(--c-dark);
+  color: white;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
+.schedule-month {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--c-gold);
+}
+
+.schedule-day {
+  font-size: 1.25rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.schedule-details {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.schedule-title {
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--c-dark);
-  background-color: var(--c-bg);
-  border: 1px solid var(--c-border);
+  margin-bottom: 0.2rem;
+}
+
+.schedule-location {
+  font-size: 0.78rem;
+  color: var(--c-text-muted);
+}
+
+.status-pill {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.5rem;
   border-radius: 50px;
-  padding: 0.25rem 0.75rem;
+  white-space: nowrap;
+}
+
+.status-pill--active {
+  background-color: rgba(37, 211, 102, 0.1);
+  color: #25D366;
+}
+
+/* ── Global Card States ── */
+.loader, .empty-state {
+  padding: 3rem 1rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--c-text-muted);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1200px) {
+  .stats-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1024px) {
+  .auctions-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
-  .auction-hub { padding: 2rem 1.25rem; }
-  .auction-hub__grid { grid-template-columns: 1fr; }
+  .stats-row {
+    grid-template-columns: 1fr;
+  }
+
+  .table-controls {
+    flex-direction: column;
+  }
+
+  /* Compact grid down to 3 columns on mobile (Hide Unit and Category) */
+  .price-table__header,
+  .price-table__row {
+    grid-template-columns: 1.5fr 1fr 1fr;
+  }
+
+  .price-table__header > div:nth-child(4),
+  .price-table__header > div:nth-child(5),
+  .price-table__row .price-unit,
+  .price-table__row .price-category {
+    display: none;
+  }
 }

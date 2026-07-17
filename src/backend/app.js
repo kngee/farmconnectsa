@@ -7,6 +7,8 @@ const rateLimit = require('express-rate-limit');
 const { twiml } = require('twilio');
 const { generateAgriResponse } = require('./services/aiService');
 const { initializeReminders, runReminderScan } = require('./services/reminderService');
+const { ingestMarketData } = require('./services/marketService');
+const { ingestAuctionData } = require('./services/auctionService');
 const { db } = require('./services/firebaseService');
 const validateTwilioRequest = require('./middleware/twilioAuth');
 const requireAdminToken = require('./middleware/adminAuth');
@@ -37,6 +39,27 @@ const adminLimiter = rateLimit({
     max: 10,
     standardHeaders: true,
     legacyHeaders: false,
+});
+
+// A lightweight endpoint to keep the server awake
+app.get('/api/health', (req, res) => {
+    const currentTime = new Date().toISOString();
+    console.log(`[HEALTH CHECK] Ping received at ${currentTime}`);
+    res.status(200).send('FarmConnectSA Backend is awake.');
+});
+
+app.post('/api/cron/ingest-market', async (req, res) => {
+    // Simple security check to ensure random people don't trigger your scraper
+    const authHeader = req.headers['authorization'];
+    if (authHeader !== `Bearer ${process.env.CRON_KEY}`) {
+        return res.status(401).send('Unauthorized');
+    }
+
+    // Acknowledge the request immediately so the cron service doesn't timeout
+    res.status(202).send('Ingestion started.');
+
+    await ingestAuctionData();
+    await ingestMarketData();
 });
 
 app.get('/api/test-reminder', adminLimiter, requireAdminToken, async (req, res) => {

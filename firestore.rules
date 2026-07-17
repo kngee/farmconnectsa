@@ -64,6 +64,18 @@ service cloud.firestore {
       allow read, write: if hasAnyRole(['super_admin', 'state_vet']);
     }
 
+    // ── Public market data (written only by the backend scrapers) ──
+    // Shown to logged-out visitors on the public Auction Hub page
+    match /market_prices/{priceId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /auction_schedules/{auctionId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     // ── Everything else: denied ──
     match /{document=**} {
       allow read, write: if false;
