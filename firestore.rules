@@ -1,0 +1,72 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ──────────────────────────────────────────────
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Requester's role, read from their users doc (one extra read per request)
+    function role() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function hasAnyRole(roles) {
+      return signedIn() && role() in roles;
+    }
+
+    // ── Users (role registry) ────────────────────────────────
+    match /users/{uid} {
+      // Own doc, or super admin (User Management screen)
+      allow get: if signedIn() && (request.auth.uid == uid || hasAnyRole(['super_admin']));
+      allow list: if hasAnyRole(['super_admin']);
+
+      // First-login self-registration: own doc only, honest email, and the
+      // role is locked — the platform owner seeds as super_admin, everyone
+      // else starts as farmer. Clients cannot self-promote.
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.role ==
+             (request.auth.token.email == 'kiransoodyall03@gmail.com' ? 'super_admin' : 'farmer');
+
+      // Only a super admin may change roles, never their own,
+      // and nothing but the role field
+      allow update: if hasAnyRole(['super_admin'])
+        && request.auth.uid != uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['role'])
+        && request.resource.data.role in ['super_admin', 'state_vet', 'auctioneer', 'farmer'];
+
+      allow delete: if false;
+    }
+
+    // ── Farmer profiles (written only by the backend Admin SDK) ──
+    match /farmer_profiles/{profileId} {
+      // Direct fetch by ID: the farmer dashboard lookup (uid / whatsapp:<phone>)
+      allow get: if signedIn();
+      // Queries: staff CRM may list everything; a farmer's lookup query is
+      // only provable when filtered to their own sign-in email
+      allow list: if hasAnyRole(['super_admin', 'state_vet'])
+        || (signedIn() && resource.data.email == request.auth.token.email);
+      allow write: if false;
+    }
+
+    // ── Chat logs (written only by the backend Admin SDK) ──
+    match /chat_logs/{logId} {
+      allow read: if hasAnyRole(['super_admin', 'state_vet']);
+      allow write: if false;
+    }
+
+    // ── Platform settings (AI usage limit on the Chat Logs tab) ──
+    match /settings/{settingId} {
+      allow read, write: if hasAnyRole(['super_admin', 'state_vet']);
+    }
+
+    // ── Everything else: denied ──
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

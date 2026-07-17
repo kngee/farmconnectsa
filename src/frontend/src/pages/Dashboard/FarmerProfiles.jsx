@@ -1,29 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { db } from '../../firebase.js';
+import { formatDate, renderLocation } from '../../utils/profileDisplay.js';
 import './FarmerProfiles.css';
-
-// Helper function to format dates
-const formatDate = (isoString) => {
-  if (!isoString) return '—';
-  const date = new Date(isoString);
-  if (isNaN(date.getTime())) return '—';
-  
-  return date.toLocaleDateString('en-ZA', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-};
-
-// Robust Location Renderer
-const renderLocation = (loc) => {
-  if (!loc || loc === 'unknown') return 'Location Unknown';
-  if (typeof loc === 'string') return loc; 
-  return [loc.nearestTown, loc.province].filter(Boolean).join(', ') || 'Location Unknown';
-};
 
 // Risk Status component
 const RiskStatus = ({ status }) => {

@@ -40,6 +40,25 @@
   color: var(--c-gold);
 }
 
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.navbar__link {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  letter-spacing: 0.03em;
+  transition: color 0.15s ease;
+}
+
+.navbar__link:hover {
+  color: var(--c-gold);
+}
+
 .navbar__login {
   font-family: var(--font-body);
   font-size: 0.85rem;

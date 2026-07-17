@@ -1,0 +1,6 @@
+.public-auctions {
+  /* Clear the fixed 60px navbar and fill the viewport above the footer */
+  padding-top: 60px;
+  min-height: calc(100vh - 60px);
+  background-color: var(--c-bg);
+}

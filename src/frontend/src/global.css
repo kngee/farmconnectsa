@@ -75,3 +75,30 @@ button {
 .btn-primary:active {
   transform: translateY(0);
 }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.875rem 2rem;
+  background-color: transparent;
+  color: var(--c-green);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--c-green);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--c-green);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+}

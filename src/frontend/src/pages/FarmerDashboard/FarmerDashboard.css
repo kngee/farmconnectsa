@@ -1,0 +1,267 @@
+.farmer-dashboard {
+  min-height: 100vh;
+  background-color: var(--c-bg);
+  font-family: var(--font-body);
+}
+
+/* ── Top Navigation ── */
+.farmer-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0 2rem;
+  height: 60px;
+  background-color: var(--c-dark);
+  border-bottom: 1px solid rgba(233, 168, 76, 0.15);
+}
+
+.farmer-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+  white-space: nowrap;
+}
+
+.farmer-nav__badge {
+  width: 26px;
+  height: 26px;
+  background-color: var(--c-gold);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.farmer-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-grow: 1;
+}
+
+.farmer-nav__link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.farmer-nav__link:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.farmer-nav__link.active {
+  color: var(--c-dark);
+  background-color: var(--c-gold);
+}
+
+.farmer-nav__right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.farmer-nav__switch {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--c-gold);
+  border: 1px solid rgba(233, 168, 76, 0.4);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.85rem;
+  transition: background-color 0.15s ease;
+}
+
+.farmer-nav__switch:hover {
+  background-color: rgba(233, 168, 76, 0.12);
+}
+
+.farmer-nav__email {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.farmer-nav__signout {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--c-dark);
+  background-color: var(--c-gold);
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.15s ease;
+}
+
+.farmer-nav__signout:hover {
+  background-color: var(--c-gold-dark);
+}
+
+/* ── Empty state (no profile yet) ── */
+.farmer-empty {
+  background-color: var(--c-surface);
+  border: 1px dashed var(--c-border);
+  border-radius: var(--radius-lg);
+  padding: 3.5rem 2rem;
+  text-align: center;
+  max-width: 560px;
+  margin: 1rem auto 0;
+}
+
+.farmer-empty__icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.farmer-empty__heading {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--c-dark);
+  margin-bottom: 0.5rem;
+}
+
+.farmer-empty__body {
+  font-size: 0.9rem;
+  color: var(--c-text-muted);
+  line-height: 1.65;
+  margin-bottom: 1.75rem;
+}
+
+/* ── Profile card ── */
+.farmer-profile-card {
+  background-color: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  max-width: 720px;
+}
+
+.farmer-profile-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--c-border);
+  background-color: #f8f9fa;
+}
+
+.farmer-profile-card__name {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--c-dark);
+  margin-bottom: 0.4rem;
+}
+
+.farmer-profile-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--c-text-muted);
+}
+
+.farmer-profile-card__summary {
+  padding: 1.5rem;
+  background-color: rgba(233, 168, 76, 0.05);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--c-dark);
+}
+
+.farmer-profile-card__summary p { margin: 0; }
+
+.farmer-profile-card__section {
+  padding: 1.5rem;
+  border-top: 1px solid var(--c-border);
+}
+
+.farmer-profile-card__section h4 {
+  font-size: 0.8rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c-text-muted);
+  margin-bottom: 1rem;
+}
+
+.farmer-profile-card__herd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.farmer-profile-card__chip {
+  background-color: var(--c-bg);
+  border: 1px solid var(--c-border);
+  padding: 0.35rem 0.85rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--c-dark);
+}
+
+.farmer-profile-card__chip-count {
+  color: var(--c-gold-dark);
+  margin-right: 0.35rem;
+}
+
+.farmer-profile-card__health {
+  margin: 0;
+  padding-left: 1.2rem;
+  font-size: 0.9rem;
+  color: var(--c-dark);
+}
+
+.farmer-profile-card__health li { margin-bottom: 0.35rem; }
+.farmer-profile-card__health li.is-resolved { color: var(--c-green); }
+.farmer-profile-card__health li.is-active { color: #B91C1C; }
+
+.farmer-profile-card__muted {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--c-text-muted);
+}
+
+.farmer-profile-card__footer {
+  padding: 0.85rem 1.5rem;
+  background-color: #f8f9fa;
+  border-top: 1px solid var(--c-border);
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--c-text-muted);
+}
+
+/* Risk badge (self-contained copy of the CRM palette) */
+.farmer-dashboard .risk-status--low { background-color: #EFF6FF; color: #1D4ED8; }
+.farmer-dashboard .risk-status--medium { background-color: #FEF3C7; color: #B45309; }
+.farmer-dashboard .risk-status--high { background-color: #FEE2E2; color: #B91C1C; }
+.farmer-dashboard .risk-status--unknown { background-color: #F3F4F6; color: #4B5563; }
+
+/* ── Responsive ── */
+@media (max-width: 760px) {
+  .farmer-nav {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.75rem 1.25rem;
+    row-gap: 0.5rem;
+  }
+  .farmer-nav__email { display: none; }
+  .farmer-profile-card__header { flex-direction: column; }
+}

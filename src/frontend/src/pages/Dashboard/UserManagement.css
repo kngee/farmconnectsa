@@ -1,0 +1,84 @@
+.user-table-wrapper {
+  background-color: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.user-table th {
+  text-align: left;
+  padding: 0.85rem 1.25rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--c-text-muted);
+  background-color: #f8f9fa;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.user-table td {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--c-border);
+  color: var(--c-dark);
+  vertical-align: middle;
+}
+
+.user-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.user-table tbody tr:hover {
+  background-color: #fdfbf7;
+}
+
+.user-table__email {
+  font-weight: 600;
+}
+
+.user-table__you {
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--c-gold-dark);
+}
+
+.user-table__role {
+  padding: 0.4rem 0.65rem;
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--c-surface);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--c-dark);
+  cursor: pointer;
+}
+
+.user-table__role:focus {
+  outline: none;
+  border-color: var(--c-gold);
+  box-shadow: 0 0 0 3px rgba(233, 168, 76, 0.15);
+}
+
+.user-table__role:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.user-table__saving {
+  margin-left: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--c-text-muted);
+}
+
+.user-table__joined {
+  color: var(--c-text-muted);
+  white-space: nowrap;
+}

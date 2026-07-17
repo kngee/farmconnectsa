@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../firebase';
-import Footer from '../../components/Footer/Footer';
+import { ensureUserDoc } from '../../services/userService.js';
+import { postLoginPath } from '../../roles.js';
 
 import './AuthPage.css';
 
@@ -39,8 +40,11 @@ export default function AuthPage() {
     setLoading(true);
     setError('');
     try {
-      await signInWithPopup(auth, googleProvider);
-      navigate('/dashboard');
+      const result = await signInWithPopup(auth, googleProvider);
+      // Creates the users/{uid} doc on first login and routes by role:
+      // super_admin -> role selection, other staff -> their dashboard tab, farmers -> farmer view
+      const role = await ensureUserDoc(result.user);
+      navigate(postLoginPath(role), { replace: true });
     } catch (err) {
       console.error('Google sign-in error:', err);
       // Friendly messages for the most common Firebase auth errors
@@ -68,10 +72,10 @@ export default function AuthPage() {
         </div>
 
         {/* Heading */}
-        <h1 className="auth-card__heading">Admin Access</h1>
+        <h1 className="auth-card__heading">Sign In</h1>
         <p className="auth-card__subtext">
-          Sign in with your authorised Google account to access the
-          FarmConnectSA admin dashboard.
+          Sign in with your Google account to access your
+          FarmConnectSA dashboard.
         </p>
 
         {/* Divider */}

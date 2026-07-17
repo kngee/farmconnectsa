@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/NavBar/NavBar.jsx';
 import Footer from '../../components/Footer/Footer';
+import { WA_LINK } from '../../config.js';
 import './LandingPage.css';
 import QRCode from 'react-qr-code';
 
@@ -12,9 +13,6 @@ const TICKER_ITEMS = [
   { number: '60–70%',  label: 'of the informal goat market are small-scale farmers' },
 ];
 
-const twilioNumber = "14155238886"; // Replace with your Twilio number (no +)
-const sandboxPassword = "join settle-is"; // Replace with your sandbox code
-const waLink = `https://wa.me/${twilioNumber}?text=${encodeURIComponent(sandboxPassword)}`;
 const CRISIS_ITEMS = [
   'No reliable access to vaccination schedules or dipping dates',
   'Livestock stolen with a 93.1% chance of never being recovered',
@@ -74,7 +72,7 @@ export default function LandingPage() {
 
   return (
     <>
-      <Navbar />
+      <Navbar links={[{ label: 'Auction Hub', to: '/auctions' }]} />
 
       {/* ── Hero ──────────────────────────────── */}
       <section className="hero">
@@ -93,7 +91,10 @@ export default function LandingPage() {
           </p>
           <div className="hero__actions">
             <button className="btn-primary" onClick={() => navigate('/auth')}>
-              Admin Login →
+              Login →
+            </button>
+            <button className="btn-secondary" onClick={() => navigate('/auctions')}>
+              View Auction Hub
             </button>
             <span className="hero__subtext">
               Eastern Cape · KwaZulu-Natal · Limpopo
@@ -124,12 +125,12 @@ export default function LandingPage() {
             boxShadow: '0 10px 25px rgba(0,0,0,0.05)',
             marginBottom: '1.5rem'
         }}>
-          <QRCode value={waLink} size={220} />
+          <QRCode value={WA_LINK} size={220} />
         </div>
         
         <div>
           <p style={{ marginBottom: '0.5rem', color: '#7f8c8d' }}>Viewing on your phone?</p>
-          <a href={waLink} style={{ 
+          <a href={WA_LINK} style={{ 
               display: 'inline-block',
               backgroundColor: '#25D366', 
               color: 'white', 
@@ -223,23 +224,6 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* ── CTA ───────────────────────────────── */}
-      <section className="cta" aria-labelledby="cta-heading">
-        <div className="cta__inner">
-          <p className="cta__label">Admin Access</p>
-          <h2 className="cta__heading" id="cta-heading">
-            Monitor the platform
-          </h2>
-          <p className="cta__body">
-            The FarmConnectSA admin dashboard gives the team real-time visibility into
-            farmer interactions, AI responses, and platform health — all in one place.
-          </p>
-          <button className="btn-primary" onClick={() => navigate('/auth')}>
-            Sign in to Dashboard →
-          </button>
         </div>
       </section>
 
