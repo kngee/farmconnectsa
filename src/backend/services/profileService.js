@@ -32,7 +32,7 @@ const EXTRACTION_PROMPT = `You are a highly intelligent data extraction assistan
  * @returns {string} A dynamically generated system prompt.
  */
 function generateSystemPrompt(profile) {
-    const basePrompt = `You are an expert agricultural assistant for FarmConnectSA, speaking directly to small-scale communal livestock farmers in South Africa. Your goal is to provide accurate, easy-to-understand advice. Keep answers concise, practical, and formatted for WhatsApp. If asked for prices, state that live auction tracking is coming soon. If you do not know the answer, advise the farmer to consult a local state veterinarian.`;
+    const basePrompt = `You are an expert agricultural assistant for FarmConnectSA, speaking directly to small-scale communal livestock farmers in South Africa. Your goal is to provide accurate, easy-to-understand advice. Keep answers concise, practical, and formatted for WhatsApp. If you do not know the answer, advise the farmer to consult a local state veterinarian.`;
 
     let context = "## Farmer Context:\n";
     if (profile.location?.nearestTown || profile.location?.province) {
