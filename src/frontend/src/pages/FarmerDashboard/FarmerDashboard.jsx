@@ -77,6 +77,9 @@ export default function FarmerDashboard({ user, role }) {
           <NavLink to="/farmer-dashboard/auctions" className={({ isActive }) => isActive ? "farmer-nav__link active" : "farmer-nav__link"}>
             ⚖️ Auction Hub
           </NavLink>
+          <NavLink to="/farmer-dashboard/marketplace" className={({ isActive }) => isActive ? "farmer-nav__link active" : "farmer-nav__link"}>
+            🛒 Marketplace
+          </NavLink>
         </nav>
 
         <div className="farmer-nav__right">

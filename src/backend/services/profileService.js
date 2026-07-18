@@ -38,6 +38,7 @@ const EXTRACTION_PROMPT = `You are a highly intelligent data extraction assistan
 - **genderDynamics:** primaryCaregiver = who does daily animal care (e.g. 'wife', 'children', 'hired herder', 'self'); legalOwner = who legally owns the animals, if stated.
 - **digitalLiteracyProxy:** 'low' if they struggle with typing/ask for voice notes/very short broken messages; 'high' if fluent detailed texting.
 - **networkReliability:** Infer from complaints about signal/data, e.g. 'poor', 'intermittent', 'good'.
+- **salesIntent:** ONLY when the farmer expresses a desire or need to SELL animals — e.g. "I want to sell 5 cattle", "looking for buyers", "school fees are due so I might sell a goat". Use timeframe 'immediate' if they want to sell within about a month or mention an urgent cash need, otherwise 'future'. Set targetDate only if a specific date or event is mentioned, else null. NEVER infer salesIntent from someone merely asking about prices or auctions out of curiosity.
 
 **JSON Schema to Follow:**
 {
@@ -45,6 +46,7 @@ const EXTRACTION_PROMPT = `You are a highly intelligent data extraction assistan
   "preferredLanguage": "string",
   "herd": [{ "animalType": "string", "count": "number", "lastReportedHealth": "string" }],
   "healthTimeline": [{ "timestamp": "ISO_8601_string", "event": "string", "severity": "string", "relatedAnimal": "string", "status": "ongoing" }],
+  "salesIntent": [{ "animalType": "string", "count": "number", "targetDate": "ISO_8601_string or null", "timeframe": "string ('immediate'|'future')" }],
   "agroEcologicalZone": "string",
   "primaryWaterSource": "string",
   "soilNutrientProfile": "string",
@@ -243,6 +245,13 @@ Return ONLY the JSON object with the fields to be added or updated.` }
 
         const extractedData = JSON.parse(extractionResponse.choices[0].message.content);
 
+        // Defensive strip: the LLM must never be able to write consent state or
+        // rewrite the identity key, even if it hallucinates these fields.
+        const PROTECTED_FIELDS = ['popiaConsent', 'consentStatus', 'consentDate', 'consentAskedAt', 'consentHistory', 'phoneNumber'];
+        for (const field of PROTECTED_FIELDS) {
+            delete extractedData[field];
+        }
+
         const profileRef = db.collection('farmer_profiles').doc(senderNumber);
 
         // Smart Herd Merging Logic
@@ -269,6 +278,27 @@ Return ONLY the JSON object with the fields to be added or updated.` }
                 ...(currentProfile.healthTimeline || []),
                 ...extractedData.healthTimeline,
             ];
+        }
+
+        // Sales Intent Merging: update-in-place per animalType (mirrors herd merge),
+        // so "actually only 3 cattle" updates the entry instead of duplicating it.
+        // Spread old + new so fields the new extraction omitted (e.g. targetDate) survive.
+        if (Array.isArray(extractedData.salesIntent)) {
+            const updatedIntents = [...(currentProfile.salesIntent || [])];
+            const nowIso = new Date().toISOString();
+
+            extractedData.salesIntent
+                .filter(n => n && typeof n.animalType === 'string' && n.animalType.trim())
+                .forEach(newIntent => {
+                    const index = updatedIntents.findIndex(existing =>
+                        (existing.animalType || '').toLowerCase() === newIntent.animalType.toLowerCase());
+                    if (index !== -1) {
+                        updatedIntents[index] = { ...updatedIntents[index], ...newIntent, updatedAt: nowIso };
+                    } else {
+                        updatedIntents.push({ ...newIntent, createdAt: nowIso, updatedAt: nowIso });
+                    }
+                });
+            extractedData.salesIntent = updatedIntents;
         }
 
         // Deep-merge nested objects so partial updates never clobber existing sub-fields

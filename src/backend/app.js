@@ -3,14 +3,17 @@ require('dotenv').config(); // Load env before any service constructs its client
 
 const express = require('express');
 const helmet = require('helmet');
+const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const { generateAgriResponse } = require('./services/aiService');
 const { initializeReminders, runReminderScan, sendOutboundWhatsApp } = require('./services/reminderService');
+const { preProcessInbound, CONSENT_ASK } = require('./services/consentService');
 const { ingestMarketData } = require('./services/marketService');
 const { ingestAuctionData } = require('./services/auctionService');
 const { db } = require('./services/firebaseService');
 const validateTwilioRequest = require('./middleware/twilioAuth');
 const requireAdminToken = require('./middleware/adminAuth');
+const marketplaceRouter = require('./routes/marketplace');
 
 const app = express();
 
@@ -31,6 +34,12 @@ app.use('/api', rateLimit({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// ── Marketplace API (browser clients: Netlify prod + Vite dev) ──
+// CORS is scoped to this router only; the Twilio webhook and cron routes are
+// server-to-server and stay CORS-free.
+const allowedOrigins = [process.env.FRONTEND_ORIGIN, 'http://localhost:5173'].filter(Boolean);
+app.use('/api/marketplace', cors({ origin: allowedOrigins }), marketplaceRouter);
 
 // Stricter limit for admin routes
 const adminLimiter = rateLimit({
@@ -93,8 +102,21 @@ app.post('/api/webhook/twilio', validateTwilioRequest, async (req, res) => {
     console.log(`Farmer ${senderNumber} asked: "${incomingMsg}"`);
 
     try {
-        // Send the message to OpenAI and wait for the response
-        const aiReply = await generateAgriResponse(incomingMsg, senderNumber);
+        // POPIA consent state machine runs first. Pure consent keywords (YES/NO
+        // while pending, STOP/START SHARING anytime) are answered directly with
+        // no OpenAI call; otherwise the AI answers and we may append the ask.
+        const consent = await preProcessInbound(senderNumber, incomingMsg);
+
+        let aiReply;
+        if (consent.consumed) {
+            aiReply = consent.reply;
+        } else {
+            // Send the message to OpenAI and wait for the response
+            aiReply = await generateAgriResponse(incomingMsg, senderNumber);
+            if (consent.appendAsk) {
+                aiReply += CONSENT_ASK;
+            }
+        }
 
         // Save the interaction to Firebase Firestore
         try {

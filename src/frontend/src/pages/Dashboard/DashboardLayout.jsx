@@ -20,6 +20,7 @@ const NAV = [
     items: [
       { tab: 'alerts', to: '/dashboard/alerts', icon: '🚨', label: 'Health Alerts' },
       { tab: 'auctions', to: '/dashboard/auctions', icon: '⚖️', label: 'Auction Management' },
+      { tab: 'marketplace', to: '/dashboard/marketplace', icon: '🛒', label: 'Marketplace' },
     ],
   },
   {

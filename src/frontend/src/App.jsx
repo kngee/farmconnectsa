@@ -18,6 +18,8 @@ import AuctionManagement from './pages/Dashboard/AuctionManagement.jsx';
 import UserManagement from './pages/Dashboard/UserManagement.jsx';
 import FarmerDashboard from './pages/FarmerDashboard/FarmerDashboard.jsx';
 import FarmerProfile from './pages/FarmerDashboard/FarmerProfile.jsx';
+import FarmerMarketplace from './pages/FarmerDashboard/FarmerMarketplace.jsx';
+import Marketplace from './pages/Dashboard/Marketplace.jsx';
 import AuctionHub from './components/AuctionHub/AuctionHub.jsx';
 import RequireRole from './components/RequireRole.jsx';
 
@@ -37,9 +39,11 @@ function TitleUpdater() {
       '/select-role': 'Choose Role - FarmConnectSA',
       '/dashboard': 'Admin Dashboard - FarmConnectSA',
       '/dashboard/auctions': 'Auction Management - FarmConnectSA',
+      '/dashboard/marketplace': 'Marketplace - FarmConnectSA',
       '/dashboard/users': 'User Management - FarmConnectSA',
       '/farmer-dashboard': 'Farmer Dashboard - FarmConnectSA',
       '/farmer-dashboard/auctions': 'Auction Hub - FarmConnectSA',
+      '/farmer-dashboard/marketplace': 'Marketplace - FarmConnectSA',
     };
 
     document.title = titles[location.pathname] || 'FarmConnectSA';
@@ -114,6 +118,7 @@ function App() {
           <Route path="profiles" element={<RequireRole role={role} tab="profiles"><FarmerProfiles /></RequireRole>} />
           <Route path="alerts" element={<RequireRole role={role} tab="alerts"><Alerts /></RequireRole>} />
           <Route path="auctions" element={<RequireRole role={role} tab="auctions"><AuctionManagement /></RequireRole>} />
+          <Route path="marketplace" element={<RequireRole role={role} tab="marketplace"><Marketplace /></RequireRole>} />
           <Route path="users" element={<RequireRole role={role} tab="users"><UserManagement /></RequireRole>} />
         </Route>
 
@@ -124,6 +129,7 @@ function App() {
         >
           <Route index element={<FarmerProfile />} />
           <Route path="auctions" element={<AuctionHub />} />
+          <Route path="marketplace" element={<FarmerMarketplace />} />
         </Route>
 
         {/* Catch-all Redirect */}

@@ -7,6 +7,8 @@ require('dotenv').config();
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 const fromNumber = process.env.TWILIO_SANDBOX_NUMBER || 'whatsapp:+14155238886';
 
+// Returns true on success, false on failure so callers (e.g. broadcastService)
+// can report honest sent/failed counts.
 async function sendOutboundWhatsApp(toNumber, messageBody) {
     try {
         await client.messages.create({
@@ -14,9 +16,11 @@ async function sendOutboundWhatsApp(toNumber, messageBody) {
             from: fromNumber,
             to: toNumber
         });
-        console.log(`✅ Automated reminder sent to ${toNumber}`);
+        console.log(`✅ Outbound WhatsApp sent to ${toNumber}`);
+        return true;
     } catch (error) {
-        console.error(`❌ Failed to send reminder to ${toNumber}:`, error.message);
+        console.error(`❌ Failed to send WhatsApp to ${toNumber}:`, error.message);
+        return false;
     }
 }
 

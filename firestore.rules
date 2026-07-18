@@ -76,6 +76,32 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // ── Marketplace listings (farmer-created; browsable by all signed-in roles) ──
+    // Contact info NEVER lives on a listing — buyer/seller contact flows through
+    // the backend Express-Interest relay, keeping phone numbers private (POPIA).
+    match /marketplace_listings/{listingId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.sellerUid == request.auth.uid
+        && request.resource.data.status == 'active'
+        && request.resource.data.animalType is string
+        && request.resource.data.animalType.size() > 0
+        && request.resource.data.count is number
+        && request.resource.data.count > 0
+        && !request.resource.data.keys().hasAny(['phoneNumber', 'phone', 'whatsapp', 'email']);
+      allow update, delete: if signedIn()
+        && (resource.data.sellerUid == request.auth.uid || hasAnyRole(['super_admin']));
+
+      // Interests are written ONLY by the backend Admin SDK; the listing owner
+      // (and super admins) may read them to see who is interested.
+      match /interests/{interestId} {
+        allow read: if signedIn()
+          && (get(/databases/$(database)/documents/marketplace_listings/$(listingId)).data.sellerUid == request.auth.uid
+              || hasAnyRole(['super_admin']));
+        allow write: if false;
+      }
+    }
+
     // ── Everything else: denied ──
     match /{document=**} {
       allow read, write: if false;
