@@ -4,9 +4,8 @@ require('dotenv').config(); // Load env before any service constructs its client
 const express = require('express');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const { twiml } = require('twilio');
 const { generateAgriResponse } = require('./services/aiService');
-const { initializeReminders, runReminderScan } = require('./services/reminderService');
+const { initializeReminders, runReminderScan, sendOutboundWhatsApp } = require('./services/reminderService');
 const { ingestMarketData } = require('./services/marketService');
 const { ingestAuctionData } = require('./services/auctionService');
 const { db } = require('./services/firebaseService');
@@ -40,6 +39,11 @@ const adminLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
 });
+
+// Lightweight health check for uptime pingers. Hitting this every ~10 min
+// keeps the Render free instance awake, which is what prevents the cold-start
+// webhook timeouts (Twilio error 11200). No auth, no side effects.
+app.get('/healthz', (req, res) => res.status(200).send('ok'));
 
 app.post('/api/cron/ingest-market', async (req, res) => {
     // Simple security check to ensure random people don't trigger your scraper
@@ -77,30 +81,39 @@ app.post('/api/webhook/twilio', validateTwilioRequest, async (req, res) => {
     const incomingMsg = req.body.Body;
     const senderNumber = req.body.From;
 
+    // Acknowledge Twilio IMMEDIATELY, before any slow work. The AI round-trip
+    // (now up to two OpenAI calls for tool use) plus Firestore reads can exceed
+    // Twilio's 15s webhook timeout, which produces error 11200. We reply
+    // asynchronously via the REST API below, decoupling response time from
+    // processing time so a slow AI call can never time out the webhook.
+    res.status(204).end();
+
+    if (!incomingMsg || !senderNumber) return;
+
     console.log(`Farmer ${senderNumber} asked: "${incomingMsg}"`);
 
-    // Send the message to OpenAI and wait for the response
-    const aiReply = await generateAgriResponse(incomingMsg, senderNumber);
-    // --> Save the interaction to Firebase Firestore
     try {
-        await db.collection('chat_logs').add({
-            phoneNumber: senderNumber,
-            userMessage: incomingMsg,
-            aiResponse: aiReply,
-            timestamp: new Date()
-        });
-        console.log("Chat logged to Firebase!");
+        // Send the message to OpenAI and wait for the response
+        const aiReply = await generateAgriResponse(incomingMsg, senderNumber);
+
+        // Save the interaction to Firebase Firestore
+        try {
+            await db.collection('chat_logs').add({
+                phoneNumber: senderNumber,
+                userMessage: incomingMsg,
+                aiResponse: aiReply,
+                timestamp: new Date()
+            });
+            console.log("Chat logged to Firebase!");
+        } catch (error) {
+            console.error("Error saving to Firebase:", error);
+        }
+
+        // Send the reply back to the farmer via the Twilio REST API
+        await sendOutboundWhatsApp(senderNumber, aiReply);
     } catch (error) {
-        console.error("Error saving to Firebase:", error);
+        console.error("Async webhook processing failed:", error);
     }
-
-    // Format the response for Twilio WhatsApp
-    const twimlResponse = new twiml.MessagingResponse();
-    twimlResponse.message(aiReply);
-
-    // Send the formatted reply back to the farmer
-    res.set('Content-Type', 'text/xml');
-    res.send(twimlResponse.toString());
 });
 
 initializeReminders();
