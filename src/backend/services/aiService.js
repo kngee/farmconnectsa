@@ -242,7 +242,7 @@ async function generateAgriResponse(incomingMsg, senderNumber) {
 
         // 5. First call: let the model answer directly or request tools
         const response = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
+            model: "gpt-4o-mini",
             messages: messages,
             tools: tools,
             tool_choice: "auto",
@@ -270,7 +270,7 @@ async function generateAgriResponse(incomingMsg, senderNumber) {
 
             // Second call (no tools param) so the model formats a final text reply
             const followUp = await openai.chat.completions.create({
-                model: "gpt-3.5-turbo",
+                model: "gpt-4o-mini",
                 messages: messages,
                 temperature: 0.7,
             });
