@@ -5,7 +5,7 @@ require('dotenv').config();
 
 // Initialize Twilio Client
 const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-const fromNumber = +14155238886;
+const fromNumber = process.env.TWILIO_SANDBOX_NUMBER || 'whatsapp:+14155238886';
 
 async function sendOutboundWhatsApp(toNumber, messageBody) {
     try {
