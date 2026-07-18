@@ -41,13 +41,6 @@ const adminLimiter = rateLimit({
     legacyHeaders: false,
 });
 
-// A lightweight endpoint to keep the server awake
-app.get('/api/health', (req, res) => {
-    const currentTime = new Date().toISOString();
-    console.log(`[HEALTH CHECK] Ping received at ${currentTime}`);
-    res.status(200).send('FarmConnectSA Backend is awake.');
-});
-
 app.post('/api/cron/ingest-market', async (req, res) => {
     // Simple security check to ensure random people don't trigger your scraper
     const authHeader = req.headers['authorization'];
