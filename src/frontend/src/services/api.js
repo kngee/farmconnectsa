@@ -1,6 +1,11 @@
 import { auth } from '../firebase.js';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
+// Prefer an explicit VITE_API_BASE_URL. Otherwise, a PRODUCTION build defaults
+// to the deployed backend (so it works even if the env var was never set), and
+// only local dev falls back to localhost.
+const API_BASE =
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.PROD ? 'https://farmconnectsa.onrender.com' : 'http://localhost:3000');
 
 /**
  * Authenticated fetch against the Express backend. Attaches the current user's

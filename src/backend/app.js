@@ -37,9 +37,23 @@ app.use(express.urlencoded({ extended: true }));
 
 // ── Marketplace API (browser clients: Netlify prod + Vite dev) ──
 // CORS is scoped to this router only; the Twilio webhook and cron routes are
-// server-to-server and stay CORS-free.
-const allowedOrigins = [process.env.FRONTEND_ORIGIN, 'http://localhost:5173'].filter(Boolean);
-app.use('/api/marketplace', cors({ origin: allowedOrigins }), marketplaceRouter);
+// server-to-server and stay CORS-free. The API is Firebase-token-gated, so CORS
+// governs which browsers may read responses, not authentication. We allow the
+// configured frontend origin, local dev, and any Netlify deploy of this site —
+// so the deployed app works even before FRONTEND_ORIGIN is set.
+function isAllowedOrigin(origin) {
+    if (!origin) return true; // curl / server-to-server requests have no Origin
+    if (origin === process.env.FRONTEND_ORIGIN) return true;
+    if (origin === 'http://localhost:5173') return true;
+    try {
+        return /\.netlify\.app$/.test(new URL(origin).hostname);
+    } catch {
+        return false;
+    }
+}
+app.use('/api/marketplace',
+    cors({ origin: (origin, callback) => callback(null, isAllowedOrigin(origin)) }),
+    marketplaceRouter);
 
 // Stricter limit for admin routes
 const adminLimiter = rateLimit({
